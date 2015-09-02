@@ -10,6 +10,7 @@ package flashwavrecorder {
   import flash.net.URLLoader;
   import flash.net.URLRequest;
   import flash.utils.ByteArray;
+  import flash.net.URLRequestHeader;
 
   import flashwavrecorder.events.MicrophoneLevelEvent;
   import flashwavrecorder.events.MicrophoneSamplesEvent;
@@ -49,7 +50,7 @@ package flashwavrecorder {
     private static const EVENT_HANDLER:String = "fwr_event_handler";
 
     public var saveButton:DisplayObject;
-    
+
     private var _recorder:MicrophoneRecorder;
     private var _permissionPanel:MicrophonePermissionPanel;
     private var _uploadUrl:String;
@@ -355,6 +356,9 @@ package flashwavrecorder {
       _uploadFormData.push(MultiPartFormUtil.fileField(_uploadFieldName, _recorder.convertToWav(name), filename, "audio/wav"));
       var request:URLRequest = MultiPartFormUtil.request(_uploadFormData);
       _uploadFormData.pop();
+
+      var header:URLRequestHeader = new URLRequestHeader("X-Requested-With", "XMLHttpRequest");
+      request.requestHeaders.push(header);
 
       request.url = _uploadUrl;
 

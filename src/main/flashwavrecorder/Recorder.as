@@ -9,10 +9,10 @@ package flashwavrecorder {
   import flash.events.IOErrorEvent;
   import flash.events.MouseEvent;
   import flash.net.URLRequest;
-  import flash.text.engine.ElementFormat;
-  import flash.text.engine.TextBlock;
-  import flash.text.engine.TextElement;
-  import flash.text.engine.TextLine;
+  import flash.display.SimpleButton;
+  import flash.display.Shape;
+  import flash.text.TextField;
+  import flash.text.TextFormat;
 
   import flashwavrecorder.wrappers.SecurityWrapper;
 
@@ -55,8 +55,11 @@ package flashwavrecorder {
       _recorderInterface.save();
     }
 
-    private function createSaveLink():Sprite {
-      var format:ElementFormat = new ElementFormat();
+    private function createSaveLink():SimpleButton {
+      var saveText:String = "Save";
+      if (root.loaderInfo.parameters["save_text"]) {
+        saveText = root.loaderInfo.parameters["save_text"];
+      }
       var fontColor:Number = 0x0000EE;
       if (root.loaderInfo.parameters["font_color"]) {
         fontColor = parseInt(root.loaderInfo.parameters["font_color"], 16);
@@ -65,32 +68,41 @@ package flashwavrecorder {
       if (root.loaderInfo.parameters["font_size"]) {
         fontSize = parseInt(root.loaderInfo.parameters["font_size"], 10);
       }
-      format.color = fontColor;
-      format.fontSize = fontSize;
-      var textBlock:TextBlock = new TextBlock();
-      var saveText:String = "Save";
-      if (root.loaderInfo.parameters["save_text"]) {
-        saveText = root.loaderInfo.parameters["save_text"];
-      }
-      textBlock.content = new TextElement(saveText, format);
-      var textLine:TextLine = textBlock.createTextLine();
-
-      var saveLink:Sprite = new Sprite();
-
-      saveLink.buttonMode = true;
-      saveLink.addChild(textLine);
-      textLine.y = textLine.ascent;
-
+      var backgroundColor:Number = 0x000000;
       if (root.loaderInfo.parameters["background_color"]) {
-        saveLink.graphics.beginFill(parseInt(root.loaderInfo.parameters["background_color"], 16));
-        saveLink.graphics.drawRect(0, 0, saveLink.width, saveLink.height);
+        backgroundColor = parseInt(root.loaderInfo.parameters["background_color"], 16);
       }
+      var formatText:TextFormat = new TextFormat();
+      formatText.color = fontColor;
+      formatText.size = fontSize;
+      formatText.bold = true;
 
-      saveLink.graphics.lineStyle(1, fontColor);
-      saveLink.graphics.moveTo(0, textLine.height - 1);
-      saveLink.graphics.lineTo(saveLink.width, textLine.height - 1);
+      var textField:TextField = new TextField();
+      textField.name = "textField";
+      textField.mouseEnabled = false;
+      textField.text = saveText;
+      textField.setTextFormat(formatText);
+      textField.y = (30 - fontSize) / 2;
+      textField.width = 60;
+      textField.autoSize = "center";
 
-      return saveLink;
+      var rectangleShape:Shape = new Shape();
+      rectangleShape.graphics.beginFill(parseInt(root.loaderInfo.parameters["background_color"], 16));
+      rectangleShape.graphics.drawRect(0, 0, 60, 30);
+      rectangleShape.graphics.endFill();
+
+      var simpleButtonSprite:Sprite = new Sprite();
+      simpleButtonSprite.name = "simpleButtonSprite";
+      simpleButtonSprite.addChild(rectangleShape);
+      simpleButtonSprite.addChild(textField);
+
+      var simpleButton:SimpleButton = new SimpleButton();
+      simpleButton.upState = simpleButtonSprite;
+      simpleButton.overState = simpleButtonSprite;
+      simpleButton.downState = simpleButtonSprite;
+      simpleButton.hitTestState = simpleButtonSprite;
+
+      return simpleButton;
     }
 
     private function createSaveImage(url:String):Sprite {

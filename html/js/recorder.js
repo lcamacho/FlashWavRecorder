@@ -13,11 +13,7 @@
     isReady: false,
 
     connect: function(name, attempts) {
-      if(navigator.appName.indexOf("Microsoft") != -1) {
-        Recorder.recorder = window[name];
-      } else {
-        Recorder.recorder = document[name];
-      }
+      Recorder.recorder = document[name];
 
       if(attempts >= 40) {
         return;
@@ -28,7 +24,7 @@
         Recorder.recorderOriginalWidth = Recorder.recorder.width;
         Recorder.recorderOriginalHeight = Recorder.recorder.height;
         if(Recorder.uploadFormId && $) {
-          var frm = $(Recorder.uploadFormId); 
+          var frm = $(Recorder.uploadFormId);
           Recorder.recorder.init(frm.attr('action').toString(), Recorder.uploadFieldName, frm.serializeArray());
         }
         return;
@@ -46,7 +42,7 @@
       // TODO: Rename to `pausePlayback`
       Recorder.recorder.pausePlayBack(name);
     },
-    
+
     playBackFrom: function(name, time) {
       // TODO: Rename to `playbackFrom`
       Recorder.recorder.playBackFrom(name, time);
@@ -122,7 +118,7 @@
     },
 
     updateForm: function() {
-      var frm = $(Recorder.uploadFormId); 
+      var frm = $(Recorder.uploadFormId);
       Recorder.recorder.update(frm.serializeArray());
     },
 
@@ -184,7 +180,7 @@
       }
 
       Recorder.recorder.setLoopBack(val);
-    }
+    },
   };
 
   function base64toBlob(b64Data, contentType, sliceSize) {

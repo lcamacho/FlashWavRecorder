@@ -29,6 +29,7 @@ package flashwavrecorder {
     public var currentSoundName:String = "";
     public var currentSoundFilename:String = "";
     public var recording:Boolean = false;
+    public var paused:Boolean = false;
     public var playing:Boolean = false;
     public var pauses:Dictionary = new Dictionary();
     public var samplingStarted:Boolean = false;
@@ -332,6 +333,18 @@ package flashwavrecorder {
       }
 
       return data;
+    }
+
+    public function pauseResumeRecording():void {
+      if (this.paused) {
+        this.mic.addEventListener(SampleDataEvent.SAMPLE_DATA, micSampleDataHandler);
+        this.mic.addEventListener(ActivityEvent.ACTIVITY, onMicrophoneActivity);
+        this.paused = false;
+      } else {
+        this.mic.removeEventListener(SampleDataEvent.SAMPLE_DATA, micSampleDataHandler);
+        this.mic.removeEventListener(ActivityEvent.ACTIVITY, onMicrophoneActivity);
+        this.paused = true;
+      }
     }
   }
 }

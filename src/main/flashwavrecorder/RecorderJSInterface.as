@@ -30,6 +30,8 @@ package flashwavrecorder {
 
     private static const RECORDING:String = "recording";
     private static const RECORDING_STOPPED:String = "recording_stopped";
+    private static const RECORDING_PAUSED:String = "recording_paused";
+    private static const RECORDING_RESUMED:String = "recording_resumed";
 
     private static const OBSERVING_LEVEL:String = "observing_level";
     private static const OBSERVING_LEVEL_STOPPED:String = "observing_level_stopped";
@@ -84,6 +86,7 @@ package flashwavrecorder {
         ExternalInterface.addCallback("stopPlayBack", stopPlayback);
         ExternalInterface.addCallback("stopRecording", stopRecording);
         ExternalInterface.addCallback("update", updateUploadForm); // TODO: Rename to "updateUploadForm"
+        ExternalInterface.addCallback("pauseResumeRecording", pauseResumeRecording);
       }
       _recorder.addEventListener(MicrophoneRecorder.SOUND_COMPLETE, playComplete);
       _recorder.addEventListener(MicrophoneRecorder.PLAYBACK_STARTED, playbackStarted);
@@ -229,6 +232,16 @@ package flashwavrecorder {
 
     private function playComplete(event:Event):void {
       ExternalInterface.call(EVENT_HANDLER, STOPPED, _recorder.currentSoundName);
+    }
+
+    private function pauseResumeRecording():void {
+      if (_recorder.paused) {
+        _recorder.pauseResumeRecording();
+        ExternalInterface.call(EVENT_HANDLER, RECORDING_RESUMED, _recorder.currentSoundName);
+      } else {
+        _recorder.pauseResumeRecording();
+        ExternalInterface.call(EVENT_HANDLER, RECORDING_PAUSED, _recorder.currentSoundName, _recorder.duration());
+      }
     }
 
 //  Getting recording info ---------------------------------------------------------------------------------------------
